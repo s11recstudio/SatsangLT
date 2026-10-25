@@ -1,0 +1,9 @@
+આ folder (SatsangLT) માં satsang.html ફાઇલ મૂકવાની છે.
+
+ક્યાંથી લાવવી:
+- જૂની SatsangLT_iPad_App.zip → SatsangLT_App folder → satsang.html
+  અથવા
+- સૌથી નવી Satsang_iPad.zip → Satsang_iPad folder → index.html
+  (એનું નામ બદલીને satsang.html કરવું)
+
+satsang.html મૂક્યા પછી આ .txt ફાઇલ કાઢી નાખશો તો ચાલશે.
