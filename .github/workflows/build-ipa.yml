@@ -1,0 +1,57 @@
+name: SatsangLT .ipa બનાવો
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - name: કોડ લાવો
+        uses: actions/checkout@v4
+
+      - name: satsang.html નું નામ સુધારો
+        run: |
+          if [ ! -f SatsangLT/satsang.html ] && [ -f SatsangLT/satsang.html.html ]; then
+            mv SatsangLT/satsang.html.html SatsangLT/satsang.html
+          fi
+          if [ ! -f SatsangLT/satsang.html ]; then
+            echo "::error::SatsangLT/satsang.html મળી નથી. જૂની zip માંથી satsang.html આ folder માં upload કરો."
+            exit 1
+          fi
+          ls -lh SatsangLT
+
+      - name: XcodeGen install
+        run: brew install xcodegen
+
+      - name: Xcode project બનાવો
+        run: xcodegen generate
+
+      - name: App build કરો (signing વગર)
+        run: |
+          xcodebuild build \
+            -project SatsangLT.xcodeproj \
+            -scheme SatsangLT \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+
+      - name: .ipa ફાઇલ બનાવો
+        run: |
+          mkdir -p Payload
+          cp -R build/Build/Products/Release-iphoneos/SatsangLT.app Payload/
+          zip -qry SatsangLT.ipa Payload
+          ls -lh SatsangLT.ipa
+
+      - name: .ipa download માટે મૂકો
+        uses: actions/upload-artifact@v4
+        with:
+          name: SatsangLT-ipa
+          path: SatsangLT.ipa
+          retention-days: 30
